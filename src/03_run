@@ -1,0 +1,16 @@
+# testfixture1.v
+vcs ./testfixture1.v ./GSIM_syn.v -v /share1/tech/ADFP/Executable_Package/Collaterals/IP/stdcell/N16ADFP_StdCell/VERILOG/N16ADFP_StdCell.v -full64 -R +v2k -sverilog -v2005 -debug_access+all  -negdelay +neg_tchk +define+SDF +define+CYCLE=$1 | tee run.log
+
+# # testfixture2.v
+# vcs ./testfixture2.v ./GSIM_syn.v -v /share1/tech/ADFP/Executable_Package/Collaterals/IP/stdcell/N16ADFP_StdCell/VERILOG/N16ADFP_StdCell.v -full64 -R +v2k -sverilog -v2005 -debug_access+all  -negdelay +neg_tchk +define+SDF +define+CYCLE=$1 | tee run.log
+
+# # testfixture3.v
+# vcs ./testfixture3.v ./GSIM_syn.v -v /share1/tech/ADFP/Executable_Package/Collaterals/IP/stdcell/N16ADFP_StdCell/VERILOG/N16ADFP_StdCell.v -full64 -R +v2k -sverilog -v2005 -debug_access+all  -negdelay +neg_tchk +define+SDF +define+CYCLE=$1 | tee run.log
+
+# # testfixture4.v
+# vcs ./testfixture4.v ./GSIM_syn.v -v /share1/tech/ADFP/Executable_Package/Collaterals/IP/stdcell/N16ADFP_StdCell/VERILOG/N16ADFP_StdCell.v -full64 -R +v2k -sverilog -v2005 -debug_access+all  -negdelay +neg_tchk +define+SDF +define+CYCLE=$1 | tee run.log
+
+# # testfixture5.v
+# vcs ./testfixture5.v ./GSIM_syn.v -v /share1/tech/ADFP/Executable_Package/Collaterals/IP/stdcell/N16ADFP_StdCell/VERILOG/N16ADFP_StdCell.v -full64 -R +v2k -sverilog -v2005 -debug_access+all  -negdelay +neg_tchk +define+SDF +define+CYCLE=$1 | tee run.log
+
+
