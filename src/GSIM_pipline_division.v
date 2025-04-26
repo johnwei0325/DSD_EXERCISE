@@ -31,7 +31,7 @@ reg signed [36:0] divide_20_in_r, divide_20_in_w;
 reg [4:0] i_r, i_w, j_r, j_w, out_idx_r, out_idx_w;
 reg [7:0] k_r, k_w;
 reg signed [36:0] theta_r, theta_w;
-reg wait_r, wait_w;
+reg [1:0] wait_r, wait_w;
 
 wire signed [31:0] divide_20_out;
 
@@ -71,7 +71,7 @@ always @(posedge clk) begin
             x_buffer[i] <= 0;
         end
         divide_20_in_r <= 0;
-        wait_r <= 1;
+        wait_r <= 0;
     end else begin
         current_state <= next_state;
         counter <= next_counter;
@@ -126,12 +126,12 @@ always @(*) begin
             if (counter > 0) begin
                 out_idx_w = counter;
                 if (counter < 16) begin
-                    if (wait_r) begin
+                    if (wait_r < 3) begin
                         divide_20_in_w = $signed((b_buffer[counter] <<< 16) - theta_r);
-                        wait_w = 0;
+                        wait_w = wait_r + 16'b1;
                     end else begin
                         x_buffer_tmp_w = divide_20_out;
-                        wait_w = 1;
+                        wait_w = 0;
                         next_counter = counter - 1;
                     end
                 end else begin
@@ -141,14 +141,14 @@ always @(*) begin
                 next_state = I_INIT;
             end else begin
                 out_idx_w = 0;
-                if (wait_r) begin
-                    wait_w = 0;
+                if (wait_r < 3) begin
+                    wait_w = wait_r + 16'b1;
                     divide_20_in_w = (b_buffer[0] <<< 16);
                 end else begin
                     x_buffer_tmp_w = divide_20_out;
-                    wait_w = 1;
+                    wait_w = 0;
+                    next_state = I_ITER;
                 end
-                next_state = I_ITER;
             end
         end
 
@@ -174,20 +174,22 @@ always @(*) begin
 
         I_COMPUTE_X: begin
             if (j_r == 0) begin
-                theta_w = calculate_theta(($signed(x_buffer[i_r])+$signed(x_buffer[i_r + 6])), ($signed(x_buffer[i_r +1] + $signed(x_buffer[i_r + 5]))), ($signed(x_buffer[i_r + 2] + $signed(x_buffer[i_r + 4]))));
+                $display("i_r: %d, %d, %d, %d", i_r, x_buffer[i_r]+ x_buffer[i_r + 6], x_buffer[i_r + 1]+ x_buffer[i_r + 5], x_buffer[i_r + 2]+ x_buffer[i_r + 4]);
+                theta_w = calculate_theta(($signed(x_buffer[i_r])+$signed(x_buffer[i_r + 6])), ($signed(x_buffer[i_r +1] + $signed(x_buffer[i_r + 5]))), ($signed(x_buffer[i_r +2] + $signed(x_buffer[i_r + 4]))));
                 next_state = I_COMPUTE_X;
                 j_w = j_r + 16'b1;
             end else begin
-                if (wait_r) begin
+                if (wait_r < 3) begin
+                    $display("theta_r: %d, %d, %d, %d", theta_r, ($signed(x_buffer[i_r])+$signed(x_buffer[i_r + 6])), ($signed(x_buffer[i_r +1] + $signed(x_buffer[i_r + 5]))), ($signed(x_buffer[i_r + 2] + $signed(x_buffer[i_r + 4]))));
                     divide_20_in_w = $signed((b_buffer[i_r] <<< 16) + theta_r);
-                    wait_w = 0;
+                    wait_w = wait_r + 16'b1;
                 end else begin
                     x_buffer_tmp_w = divide_20_out;
-                    wait_w = 1;
+                    wait_w = 0;
                     i_w = i_r +16'b1;
                     out_idx_w = i_r;
+                    next_state = I_COMPUTE_SUM;
                 end
-                next_state = I_COMPUTE_SUM;
             end
         end
         
