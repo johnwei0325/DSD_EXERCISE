@@ -138,7 +138,7 @@ always @(*) begin
             if (counter > 0) begin
                 out_idx_w = counter;
                 if (counter < 16) begin
-                    if (wait_r < 3) begin
+                    if (wait_r < 2) begin
                         divide_20_in_w = $signed((b_buffer[counter] <<< 16) - theta_r);
                         wait_w = wait_r + 16'b1;
                     end else begin
@@ -153,7 +153,7 @@ always @(*) begin
                 next_state = I_INIT;
             end else begin
                 out_idx_w = 0;
-                if (wait_r < 3) begin
+                if (wait_r < 2) begin
                     wait_w = wait_r + 16'b1;
                     divide_20_in_w = (b_buffer[0] <<< 16);
                 end else begin
@@ -189,7 +189,7 @@ always @(*) begin
             if (j_r < 3) begin
                 // $display("i_r: %d, %d, %d, %d, %d, %d, %d", i_r, x_buffer[i_r], x_buffer[i_r + 1], x_buffer[i_r + 2], x_buffer[i_r + 4], x_buffer[i_r + 5], x_buffer[i_r + 6]);
                 // theta_w = calculate_theta(($signed(x_buffer[i_r])+$signed(x_buffer[i_r + 6])), ($signed(x_buffer[i_r +1] + $signed(x_buffer[i_r + 5]))), ($signed(x_buffer[i_r + 2] + $signed(x_buffer[i_r + 4]))));
-                if (wait_r < 3) begin
+                if (wait_r < 2) begin
                     a_w = $signed(x_buffer[i_r]) + $signed(x_buffer[i_r + 6]);
                     b_w = $signed(x_buffer[i_r + 1]) + $signed(x_buffer[i_r + 5]);
                     c_w = $signed(x_buffer[i_r + 2]) + $signed(x_buffer[i_r + 4]);
@@ -201,7 +201,7 @@ always @(*) begin
                 end
                 next_state = I_COMPUTE_X;
             end else begin
-                if (wait_r < 3) begin
+                if (wait_r < 2) begin
                     divide_20_in_w = $signed((b_buffer[i_r] <<< 16) + theta_r);
                     wait_w = wait_r + 16'b1;
                 end else begin
