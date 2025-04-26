@@ -23,9 +23,16 @@ reg [5:0] counter, next_counter;
 reg signed [15:0] b_buffer [0:15];
 reg signed [36:0] x_buffer [0:22];
 reg out_valid_r, out_valid_w;
-assign out_valid = out_valid_r;
 reg [31:0] x_out_r, x_out_w;
 reg signed [36:0] x_buffer_tmp_r, x_buffer_tmp_w;
+reg [4:0] i_r, i_w, j_r, j_w, out_idx_r, out_idx_w;
+reg [7:0] k_r, k_w;
+reg signed [36:0] theta_r, theta_w;
+
+// Integer variables for loops
+integer i;
+
+assign out_valid = out_valid_r;
 assign x_out = x_out_r;
 
 function signed [31:0] divide_20; //0.05 ≈ 0.000011001100110011001100110011
@@ -38,7 +45,6 @@ function signed [31:0] divide_20; //0.05 ≈ 0.000011001100110011001100110011
                    (temp >>> 9) + (temp >>> 12) + (temp >>> 13) + (temp >>> 16) + 
                    (temp >>> 17) + (temp >>> 20) + (temp >>> 21) + (temp >>> 24) + 
                    (temp >>> 25) + (temp >>> 28) + (temp >>> 29);
-        // divide_20 = temp2[36:5] + temp2[4];
         divide_20 = (temp2 + 5'd16) >>> 5;
         // $display("temp2: %b, %b, %b", ((temp2 + 5'd16) >>> 5), temp2>>>5, temp2[36:5]);
     end
@@ -54,13 +60,6 @@ function signed [36:0] calculate_theta;
         calculate_theta = part_a - part_b + part_c;
     end
 endfunction
-
-reg [4:0] i_r, i_w, j_r, j_w, out_idx_r, out_idx_w;
-reg [7:0] k_r, k_w;
-reg signed [36:0] theta_r, theta_w;
-
-// Integer variables for loops
-integer i;
 
 // State machine
 always @(posedge clk) begin
