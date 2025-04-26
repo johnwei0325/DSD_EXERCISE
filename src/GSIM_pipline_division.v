@@ -17,18 +17,29 @@ parameter I_COMPUTE_SUM = 3'b100;   // Compute sum state
 parameter I_COMPUTE_X = 3'b101;   // Compute x state
 parameter I_SEND = 3'b110;      // Send output data state
 parameter I_WAIT = 3'b111;      // Wait state
+
 // State registers
 reg [2:0] current_state, next_state;
 reg [5:0] counter, next_counter;
 reg signed [15:0] b_buffer [0:15];
 reg signed [36:0] x_buffer [0:22];
 reg out_valid_r, out_valid_w;
-assign out_valid = out_valid_r;
 reg [31:0] x_out_r, x_out_w;
 reg signed [36:0] x_buffer_tmp_r, x_buffer_tmp_w;
-assign x_out = x_out_r;
 reg signed [36:0] divide_20_in_r, divide_20_in_w;
+
+reg [4:0] i_r, i_w, j_r, j_w, out_idx_r, out_idx_w;
+reg [7:0] k_r, k_w;
+reg signed [36:0] theta_r, theta_w;
+reg wait_r, wait_w;
+
 wire signed [31:0] divide_20_out;
+
+assign out_valid = out_valid_r;
+assign x_out = x_out_r;
+
+// Integer variables for loops
+integer i;
 
 divide_20 divide_20_inst(.clk(clk), .in(divide_20_in_r), .out(divide_20_out));
 
@@ -42,13 +53,6 @@ function signed [36:0] calculate_theta;
         calculate_theta = part_a - part_b + part_c;
     end
 endfunction
-
-reg [4:0] i_r, i_w, j_r, j_w, out_idx_r, out_idx_w;
-reg [7:0] k_r, k_w;
-reg signed [36:0] theta_r, theta_w;
-reg wait_r, wait_w;
-// Integer variables for loops
-integer i;
 
 // State machine
 always @(posedge clk) begin
